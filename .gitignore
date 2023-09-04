@@ -27,3 +27,5 @@
 *.exe
 *.out
 *.app
+/SimpleNet/.vs/SimpleNet
+/SimpleNet/x64/Debug
