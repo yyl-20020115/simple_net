@@ -21,7 +21,7 @@ int main_sigmoid_train()
 	float loss_threshold = 0.5f;
 	net.learning_rate = 0.3f;
 	net.output_interval = 2;
-	net.activation_function = "sigmoid";
+	net.activation_function = SimpleNet::func_type::sigmoid;
 
 	//Train,and draw the loss curve(cause the last parameter is ture) and test the trained net
 	net.train(input, label, loss_threshold, true);

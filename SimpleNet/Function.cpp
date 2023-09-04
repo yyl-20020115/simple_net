@@ -37,20 +37,20 @@ cv::Mat SimpleNet::ReLU(const cv::Mat& x)
 }
 
 //Derivative function
-cv::Mat SimpleNet::derivativeFunction(const cv::Mat& fx, const std::string& func_type)
+cv::Mat SimpleNet::derivativeFunction(const cv::Mat& fx, func_type ft)
 {
 	cv::Mat dx;
-	if (func_type == "sigmoid")
+	if (ft == func_type::sigmoid)
 	{
 		dx = SimpleNet::sigmoid(fx).mul((1 - sigmoid(fx)));
 	}
-	if (func_type == "tanh")
+	else if (ft == func_type::tanh)
 	{
 		cv::Mat tanh_2;
 		pow(tanh(fx), 2., tanh_2);
 		dx = 1 - tanh_2;
 	}
-	if (func_type == "ReLU")
+	else if (ft == func_type::relu)
 	{
 		dx = fx;
 		for (int i = 0; i < fx.rows; i++)

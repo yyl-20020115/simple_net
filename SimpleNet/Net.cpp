@@ -2,19 +2,19 @@
 #include <opencv2/opencv.hpp>
 
 //Activation function
-cv::Mat SimpleNet::Net::activationFunction(const cv::Mat& x,const std::string& func_type)
+cv::Mat SimpleNet::Net::activationFunction(const cv::Mat& x, func_type ft)
 {
-	activation_function = func_type;
+	activation_function = ft;
 	cv::Mat fx;
-	if (func_type == "sigmoid")
+	if (ft == func_type::sigmoid)
 	{
 		fx = sigmoid(x);
 	}
-	if (func_type == "tanh")
+	else if (ft==func_type::tanh)
 	{
 		fx = tanh(x);
 	}
-	if (func_type == "ReLU")
+	else if (ft==func_type::relu)
 	{
 		fx = ReLU(x);
 	}

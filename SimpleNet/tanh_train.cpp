@@ -21,7 +21,7 @@ int main_tanh_train()
 	float loss_threshold = 0.2f;
 	net.learning_rate = 0.02f;
 	net.output_interval = 2;
-	net.activation_function = "tanh";
+	net.activation_function = SimpleNet::func_type::tanh;
 
 	//convert label from 0---1 to -1---1,cause tanh function range is [-1,1]
 	label = 2 * label - 1;

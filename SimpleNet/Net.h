@@ -13,7 +13,7 @@ namespace SimpleNet
         //Integer vector specifying the number of neurons in each layer including the input and output layers.
 		std::vector<double> loss_vec;
 		std::vector<int> layer_neuron_num;
-		std::string activation_function = "sigmoid";
+		func_type activation_function = func_type::sigmoid;
 		int output_interval = 10;
 		float learning_rate = 0.0f; 
 		float accuracy = 0.0f;
@@ -76,7 +76,7 @@ namespace SimpleNet
 		void initWeight(const cv::Mat &dst, int type, double a, double b);
 
 		//Activation function
-		cv::Mat activationFunction(const cv::Mat &x, const std::string& func_type);
+		cv::Mat activationFunction(const cv::Mat &x, func_type ft);
 
 		//Compute delta error
 		void deltaError();

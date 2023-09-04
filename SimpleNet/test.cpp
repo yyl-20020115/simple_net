@@ -23,7 +23,7 @@ int main_test()
 	float loss_threshold = 0.5;
 	net.learning_rate = 0.3f;
 	net.output_interval = 2;
-	net.activation_function = "sigmoid";
+	net.activation_function = SimpleNet::func_type::sigmoid;
 
 	//convert label from 0---1 to -1---1,cause tanh function range is [-1,1]
 	//label = 2 * label - 1;

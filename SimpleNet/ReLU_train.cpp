@@ -25,7 +25,7 @@ int main_relu_train()
 	float loss_threshold = 412;
 	net.learning_rate = 0.002f;
 	net.output_interval = 2;
-	net.activation_function = "ReLU";
+	net.activation_function = SimpleNet::func_type::relu;
 
 	//Train,and draw the loss curve(cause the last parameter is ture) and test the trained net
 	net.train(input, label, loss_threshold, true);
