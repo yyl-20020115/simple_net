@@ -8,8 +8,8 @@ int main_relu_train()
 
 	// Initialise Net and weights
 	SimpleNet::Net net;
-	net.initNet(layer_neuron_num);
-	net.initWeights(0, 0., 0.01);
+	net.InitNet(layer_neuron_num);
+	net.InitWeights(0, 0., 0.01);
 
 	//Get test samples and test samples 
 	cv::Mat input, label, test_input, test_label;
@@ -18,21 +18,21 @@ int main_relu_train()
 	//SimpleNet::get_input_label("data/input_label_1-10_1000.xml", input, label, sample_number);
 	//SimpleNet::get_input_label("data/input_label_1-10_1000.xml", test_input, test_label, 200, 800);
 
-	SimpleNet::get_input_label("data/input_label_0-9_1000.xml", input, label, sample_number);
-	SimpleNet::get_input_label("data/input_label_0-9_1000.xml", test_input, test_label, 200, 800);
+	SimpleNet::GetInputLabel("data/input_label_0-9_1000.xml", input, label, sample_number);
+	SimpleNet::GetInputLabel("data/input_label_0-9_1000.xml", test_input, test_label, 200, 800);
 
 	//Set loss threshold,learning rate and activation function
 	float loss_threshold = 412;
 	net.learning_rate = 0.002f;
 	net.output_interval = 2;
-	net.activation_function = SimpleNet::func_type::relu;
+	net.activation_function = SimpleNet::FuncType::ReLU;
 
 	//Train,and draw the loss curve(cause the last parameter is ture) and test the trained net
-	net.train(input, label, loss_threshold, true);
-	net.test(test_input, test_label);
+	net.Train(input, label, loss_threshold, true);
+	net.Test(test_input, test_label);
 
 	//Save the model
-	net.save("models/model_ReLU_800_200.xml");
+	net.Save("models/model_ReLU_800_200.xml");
 
 	//getchar();
 	return 0;

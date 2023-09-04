@@ -13,7 +13,7 @@ namespace SimpleNet
         //Integer vector specifying the number of neurons in each layer including the input and output layers.
 		std::vector<double> loss_vec;
 		std::vector<int> layer_neuron_num;
-		func_type activation_function = func_type::sigmoid;
+		FuncType activation_function = FuncType::Sigmoid;
 		int output_interval = 10;
 		float learning_rate = 0.0f; 
 		float accuracy = 0.0f;
@@ -36,58 +36,58 @@ namespace SimpleNet
 	public:
 		//Initialize net:genetate weights matrices¡¢layer matrices and bias matrices
 		// bias default all zero
-		void initNet(const std::vector<int>& layer_neuron_num_);
+		void InitNet(const std::vector<int>& layer_neuron_num_);
 
 		//Initialise the weights matrices.
-		void initWeights(int type = 0, double a = 0.0, double b = 0.1);
+		void InitWeights(int type = 0, double a = 0.0, double b = 0.1);
 
 		//Initialise the bias matrices.
-		void initBias(const cv::Scalar& bias);
+		void InitBias(const cv::Scalar& bias);
 
 		//Forward
-		void forward();
+		void Forward();
 
 		//Forward
-		void backward();
+		void Backward();
 
 		//Train,use accuracy_threshold
-		void train(const cv::Mat& input, const cv::Mat& target, float accuracy_threshold);
+		void Train(const cv::Mat& input, const cv::Mat& target, float accuracy_threshold);
 
 		//Train,use loss_threshold
-		void train(const cv::Mat& input, const cv::Mat& target_, float loss_threshold, bool draw_loss_curve = false);
+		void Train(const cv::Mat& input, const cv::Mat& target_, float loss_threshold, bool draw_loss_curve = false);
 
 		//Test
-		void test(const cv::Mat &input, const cv::Mat &target_);
+		void Test(const cv::Mat &input, const cv::Mat &target_);
 
 		//Predict,just one sample
-		int predict_one(const cv::Mat &input);
+		int Predict(const cv::Mat &input);
 
 		//Predict,more  than one samples
-		std::vector<int> predict(const cv::Mat &input);
+		std::vector<int> Predicts(const cv::Mat &input);
 
 		//Save model;
-		void save(const std::string& filename);
+		void Save(const std::string& filename);
 
 		//Load model;
-		void load(const std::string& filename);
+		void Load(const std::string& filename);
 
 	protected:
 		//initialise the weight matrix.if type =0,Gaussian.else uniform.
-		void initWeight(const cv::Mat &dst, int type, double a, double b);
+		void InitWeight(const cv::Mat &dst, int type, double a, double b);
 
 		//Activation function
-		cv::Mat activationFunction(const cv::Mat &x, func_type ft);
+		cv::Mat ActivationFunction(const cv::Mat &x, FuncType ft);
 
 		//Compute delta error
-		void deltaError();
+		void ComputeDeltaError();
 
 		//Update weights
-		void updateWeights();
+		void UpdateWeights();
 	};
 
 	//Get sample_number samples in XML file,from the start column. 
-	void get_input_label(const std::string& filename, cv::Mat& input, cv::Mat& label, int sample_num, int start = 0);
+	void GetInputLabel(const std::string& filename, cv::Mat& input, cv::Mat& label, int sample_num, int start = 0);
 
 	// Draw loss curve
-	void draw_curve(cv::Mat& board, const std::vector<double>& points);
+	void DrawCurve(cv::Mat& board, const std::vector<double>& points);
 }

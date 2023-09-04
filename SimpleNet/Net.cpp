@@ -2,19 +2,19 @@
 #include <opencv2/opencv.hpp>
 
 //Activation function
-cv::Mat SimpleNet::Net::activationFunction(const cv::Mat& x, func_type ft)
+cv::Mat SimpleNet::Net::ActivationFunction(const cv::Mat& x, FuncType ft)
 {
 	activation_function = ft;
 	cv::Mat fx;
-	if (ft == func_type::sigmoid)
+	if (ft == FuncType::Sigmoid)
 	{
-		fx = sigmoid(x);
+		fx = Sigmoid(x);
 	}
-	else if (ft==func_type::tanh)
+	else if (ft==FuncType::Tanh)
 	{
-		fx = tanh(x);
+		fx = Tanh(x);
 	}
-	else if (ft==func_type::relu)
+	else if (ft==FuncType::ReLU)
 	{
 		fx = ReLU(x);
 	}
@@ -27,7 +27,7 @@ SimpleNet::Net::Net()
 SimpleNet::Net::~Net() {}
 
 //Initialize net
-void SimpleNet::Net::initNet(const std::vector<int>& layer_neuron_num_)
+void SimpleNet::Net::InitNet(const std::vector<int>& layer_neuron_num_)
 {
 	layer_neuron_num = layer_neuron_num_;
 	//Generate every layer.
@@ -52,7 +52,7 @@ void SimpleNet::Net::initNet(const std::vector<int>& layer_neuron_num_)
 }
 
 //initialise the weights cv::Matrix.if type =0,Gaussian.else uniform.
-void SimpleNet::Net::initWeight(const cv::Mat& dst, int type, double a, double b)
+void SimpleNet::Net::InitWeight(const cv::Mat& dst, int type, double a, double b)
 {
 	if (type == 0)
 	{
@@ -65,17 +65,17 @@ void SimpleNet::Net::initWeight(const cv::Mat& dst, int type, double a, double b
 }
 
 //initialise the weights matrix.
-void SimpleNet::Net::initWeights(int type, double a, double b)
+void SimpleNet::Net::InitWeights(int type, double a, double b)
 {
 	//Initialise weights matrices and bias
 	for (int i = 0; i < weights.size(); ++i)
 	{
-		initWeight(weights[i], 0, 0., 0.1);
+		InitWeight(weights[i], 0, 0., 0.1);
 	}
 }
 
 //Initialise the bias matrices.
-void SimpleNet::Net::initBias(const cv::Scalar& bias_)
+void SimpleNet::Net::InitBias(const cv::Scalar& bias_)
 {
 	for (int i = 0; i < bias.size(); i++)
 	{
@@ -84,25 +84,25 @@ void SimpleNet::Net::initBias(const cv::Scalar& bias_)
 }
 
 //Forward
-void SimpleNet::Net::forward()
+void SimpleNet::Net::Forward()
 {
 	for (int i = 0; i < layer_neuron_num.size() - 1; ++i)
 	{
 		cv::Mat product = weights[i] * layer[i] + bias[i];
-		layer[i + 1] = activationFunction(product, activation_function);
+		layer[i + 1] = ActivationFunction(product, activation_function);
 	}
-	calcLoss(layer[layer.size() - 1], target, output_error, loss);
+	CalcLoss(layer[layer.size() - 1], target, output_error, loss);
 }
 
 //Compute delta error
-void SimpleNet::Net::deltaError()
+void SimpleNet::Net::ComputeDeltaError()
 {
 	delta_err.resize(layer.size() - 1);
 	for (int i = (int)delta_err.size() - 1; i >= 0; i--)
 	{
 		delta_err[i].create(layer[i + 1].size(), layer[i + 1].type());
 		//cv::Mat dx = layer[i+1].mul(1 - layer[i+1]);
-		cv::Mat dx = derivativeFunction(layer[i + 1], activation_function);
+		cv::Mat dx = DerivativeFunction(layer[i + 1], activation_function);
 		//Output layer delta error
 		if (i == delta_err.size() - 1)
 		{
@@ -119,7 +119,7 @@ void SimpleNet::Net::deltaError()
 }
 
 //Update weights
-void SimpleNet::Net::updateWeights()
+void SimpleNet::Net::UpdateWeights()
 {
 	for (int i = 0; i < weights.size(); ++i)
 	{
@@ -131,16 +131,16 @@ void SimpleNet::Net::updateWeights()
 }
 
 //Forward
-void SimpleNet::Net::backward()
+void SimpleNet::Net::Backward()
 {
 	//move this function to the end of the forward().
 	//calcLoss(layer[layer.size() - 1], target, output_error, loss);
-	deltaError();
-	updateWeights();
+	ComputeDeltaError();
+	UpdateWeights();
 }
 
 //Train,use accuracy_threshold
-void SimpleNet::Net::train(const cv::Mat& input, const cv::Mat& target_, float accuracy_threshold)
+void SimpleNet::Net::Train(const cv::Mat& input, const cv::Mat& target_, float accuracy_threshold)
 {
 	if (input.empty())
 	{
@@ -156,13 +156,13 @@ void SimpleNet::Net::train(const cv::Mat& input, const cv::Mat& target_, float a
 		target = target_;
 		sample = input;
 		layer[0] = sample;
-		forward();
+		Forward();
 		//backward();
 		int num_of_train = 0;
 		while (accuracy < accuracy_threshold)
 		{
-			backward();
-			forward();
+			Backward();
+			Forward();
 			num_of_train++;
 			if (num_of_train % 500 == 0)
 			{
@@ -187,11 +187,11 @@ void SimpleNet::Net::train(const cv::Mat& input, const cv::Mat& target_, float a
 				sample = input.col(i);
 
 				layer[0] = sample;
-				forward();
+				Forward();
 				batch_loss += loss;
-				backward();
+				Backward();
 			}
-			test(input, target_);
+			Test(input, target_);
 			epoch++;
 			if (epoch % 10 == 0)
 			{
@@ -214,7 +214,7 @@ void SimpleNet::Net::train(const cv::Mat& input, const cv::Mat& target_, float a
 }
 
 //Train,use loss_threshold
-void SimpleNet::Net::train(const cv::Mat& input, const cv::Mat& target_, float loss_threshold, bool draw_loss_curve)
+void SimpleNet::Net::Train(const cv::Mat& input, const cv::Mat& target_, float loss_threshold, bool draw_loss_curve)
 {
 	if (input.empty())
 	{
@@ -230,13 +230,13 @@ void SimpleNet::Net::train(const cv::Mat& input, const cv::Mat& target_, float l
 		target = target_;
 		sample = input;
 		layer[0] = sample;
-		forward();
+		Forward();
 		//backward();
 		int num_of_train = 0;
 		while (loss > loss_threshold)
 		{
-			backward();
-			forward();
+			Backward();
+			Forward();
 			num_of_train++;
 			if (num_of_train % 500 == 0)
 			{
@@ -261,8 +261,8 @@ void SimpleNet::Net::train(const cv::Mat& input, const cv::Mat& target_, float l
 				sample = input.col(i);
 				layer[0] = sample;
 
-				forward();
-				backward();
+				Forward();
+				Backward();
 
 				batch_loss += loss;
 			}
@@ -271,7 +271,7 @@ void SimpleNet::Net::train(const cv::Mat& input, const cv::Mat& target_, float l
 
 			if (loss_vec.size() >= 2 && draw_loss_curve)
 			{
-				draw_curve(board, loss_vec);
+				DrawCurve(board, loss_vec);
 			}
 			epoch++;
 			if (epoch % output_interval == 0)
@@ -295,7 +295,7 @@ void SimpleNet::Net::train(const cv::Mat& input, const cv::Mat& target_, float l
 }
 
 //Test
-void SimpleNet::Net::test(const cv::Mat& input, const cv::Mat& target_)
+void SimpleNet::Net::Test(const cv::Mat& input, const cv::Mat& target_)
 {
 	if (input.empty())
 	{
@@ -306,7 +306,7 @@ void SimpleNet::Net::test(const cv::Mat& input, const cv::Mat& target_)
 
 	if (input.rows == (layer[0].rows) && input.cols == 1)
 	{
-		int predict_number = predict_one(input);
+		int predict_number = Predict(input);
 
 		cv::Point target_maxLoc;
 		minMaxLoc(target_, NULL, NULL, NULL, &target_maxLoc, cv::noArray());
@@ -324,7 +324,7 @@ void SimpleNet::Net::test(const cv::Mat& input, const cv::Mat& target_)
 		for (int i = 0; i < input.cols; ++i)
 		{
 			sample = input.col(i);
-			int predict_number = predict_one(sample);
+			int predict_number = Predict(sample);
 			loss_sum += loss;
 
 			target = target_.col(i);
@@ -351,7 +351,7 @@ void SimpleNet::Net::test(const cv::Mat& input, const cv::Mat& target_)
 }
 
 //Predict
-int SimpleNet::Net::predict_one(const cv::Mat& input)
+int SimpleNet::Net::Predict(const cv::Mat& input)
 {
 	if (input.empty())
 	{
@@ -362,7 +362,7 @@ int SimpleNet::Net::predict_one(const cv::Mat& input)
 	if (input.rows == (layer[0].rows) && input.cols == 1)
 	{
 		layer[0] = input;
-		forward();
+		Forward();
 
 		cv::Mat layer_out = layer[layer.size() - 1];
 		cv::Point predict_maxLoc;
@@ -378,7 +378,7 @@ int SimpleNet::Net::predict_one(const cv::Mat& input)
 }
 
 //Predict,more  than one samples
-std::vector<int> SimpleNet::Net::predict(const cv::Mat& input)
+std::vector<int> SimpleNet::Net::Predicts(const cv::Mat& input)
 {
 	std::vector<int> predicted_labels;
 	if (input.rows == (layer[0].rows) && input.cols > 1)
@@ -386,7 +386,7 @@ std::vector<int> SimpleNet::Net::predict(const cv::Mat& input)
 		for (int i = 0; i < input.cols; ++i)
 		{
 			cv::Mat sample = input.col(i);
-			int predicted_label = predict_one(sample);
+			int predicted_label = Predict(sample);
 			predicted_labels.push_back(predicted_label);
 		}
 	}
@@ -394,7 +394,7 @@ std::vector<int> SimpleNet::Net::predict(const cv::Mat& input)
 }
 
 //Save model;
-void SimpleNet::Net::save(const std::string& filename)
+void SimpleNet::Net::Save(const std::string& filename)
 {
 	cv::FileStorage model(filename, cv::FileStorage::WRITE);
 	model << "layer_neuron_num" << layer_neuron_num;
@@ -410,14 +410,14 @@ void SimpleNet::Net::save(const std::string& filename)
 }
 
 //Load model;
-void SimpleNet::Net::load(const std::string& filename)
+void SimpleNet::Net::Load(const std::string& filename)
 {
 	cv::FileStorage fs;
 	fs.open(filename, cv::FileStorage::READ);
 	cv::Mat input_, target_;
 
 	fs["layer_neuron_num"] >> layer_neuron_num;
-	initNet(layer_neuron_num);
+	InitNet(layer_neuron_num);
 
 	for (int i = 0; i < weights.size(); i++)
 	{
@@ -432,7 +432,7 @@ void SimpleNet::Net::load(const std::string& filename)
 }
 
 //Get sample_number samples in XML file,from the start column. 
-void SimpleNet::get_input_label(const std::string& filename, cv::Mat& input, cv::Mat& label, int sample_num, int start)
+void SimpleNet::GetInputLabel(const std::string& filename, cv::Mat& input, cv::Mat& label, int sample_num, int start)
 {
 	cv::FileStorage fs;
 	fs.open(filename, cv::FileStorage::READ);
@@ -445,7 +445,7 @@ void SimpleNet::get_input_label(const std::string& filename, cv::Mat& input, cv:
 }
 
 //Draw loss curve
-void SimpleNet::draw_curve(cv::Mat& board, const std::vector<double>& points)
+void SimpleNet::DrawCurve(cv::Mat& board, const std::vector<double>& points)
 {
 	cv::Mat board_(620, 1000, CV_8UC3, cv::Scalar::all(200));
 	board = board_;

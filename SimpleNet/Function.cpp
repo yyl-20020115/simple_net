@@ -1,7 +1,7 @@
 #include"Function.h"
 
 //sigmoid function
-cv::Mat SimpleNet::sigmoid(const cv::Mat& x)
+cv::Mat SimpleNet::Sigmoid(const cv::Mat& x)
 {
 	cv::Mat exp_x, fx;
 	cv::exp(-x, exp_x);
@@ -10,7 +10,7 @@ cv::Mat SimpleNet::sigmoid(const cv::Mat& x)
 }
 
 //tanh function
-cv::Mat SimpleNet::tanh(const cv::Mat& x)
+cv::Mat SimpleNet::Tanh(const cv::Mat& x)
 {
 	cv::Mat exp_x_, exp_x, fx;
 	cv::exp(-x, exp_x_);
@@ -37,20 +37,20 @@ cv::Mat SimpleNet::ReLU(const cv::Mat& x)
 }
 
 //Derivative function
-cv::Mat SimpleNet::derivativeFunction(const cv::Mat& fx, func_type ft)
+cv::Mat SimpleNet::DerivativeFunction(const cv::Mat& fx, FuncType ft)
 {
 	cv::Mat dx;
-	if (ft == func_type::sigmoid)
+	if (ft == FuncType::Sigmoid)
 	{
-		dx = SimpleNet::sigmoid(fx).mul((1 - sigmoid(fx)));
+		dx = SimpleNet::Sigmoid(fx).mul((1 - Sigmoid(fx)));
 	}
-	else if (ft == func_type::tanh)
+	else if (ft == FuncType::Tanh)
 	{
 		cv::Mat tanh_2;
-		pow(tanh(fx), 2., tanh_2);
+		pow(Tanh(fx), 2., tanh_2);
 		dx = 1 - tanh_2;
 	}
-	else if (ft == func_type::relu)
+	else if (ft == FuncType::ReLU)
 	{
 		dx = fx;
 		for (int i = 0; i < fx.rows; i++)
@@ -68,7 +68,7 @@ cv::Mat SimpleNet::derivativeFunction(const cv::Mat& fx, func_type ft)
 }
 
 //Objective function
-void SimpleNet::calcLoss(const cv::Mat& output, const  cv::Mat& target, cv::Mat& output_error, float& loss)
+void SimpleNet::CalcLoss(const cv::Mat& output, const  cv::Mat& target, cv::Mat& output_error, float& loss)
 {
 	if (target.empty())
 	{
